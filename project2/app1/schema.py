@@ -46,7 +46,7 @@ class Query(graphene.ObjectType):
     vehiclesbyfireid = graphene.List(CarType, fireid=graphene.String(required = True))
     
     parkingdetail = graphene.List(ParkingdetailType)
-    parkingdetailbyid = graphene.Field(ParkingdetailType, id=graphene.ID(required = True))
+    parkingdetailbyid = graphene.Field(ParkingdetailType, id=graphene.String(required = True))
     parkingdetailbymulti = graphene.List(ParkingdetailType, fireid=graphene.String(required = True),todaydate= graphene.String(required = True),parkingname = graphene.String(required = True))
     
     parkingspot = graphene.List(ParkingspotType)
@@ -198,9 +198,10 @@ class CreateParkingdetail(graphene.Mutation):
         fireid = graphene.String(required=True)
         todaydate = graphene.String(required=True)
         parkingname = graphene.String(required=True)
+        address = graphene.String(required=True)
         
-    def mutate(self, info,fireid,todaydate,parkingname):
-        parkingdetail = ParkingDetails(fireid = fireid,todaydate=todaydate,parkingname= parkingname)
+    def mutate(self, info,fireid,todaydate,parkingname,address):
+        parkingdetail = ParkingDetails(fireid = fireid,todaydate=todaydate,parkingname= parkingname,address=address)
         parkingdetail.save()
         return CreateParkingdetail(parkingdetail = parkingdetail)  
     
@@ -502,6 +503,23 @@ class DeleteSaved(graphene.Mutation):
         except SavedParkinglot.DoesNotExist:
             return DeleteSaved(id=None, success=False)
 
+# Deleting PArking Detail
+
+class DeleteParkingdetail(graphene.Mutation):
+    id = graphene.ID()
+    success = graphene.Boolean()
+
+    class Arguments:
+        id = graphene.ID(required=True)
+
+    def mutate(self, info, id):
+        try:
+            save = ParkingDetails.objects.get(id=id)
+            save.delete()
+            return DeleteParkingdetail(id=id, success=True)
+        except ParkingDetails.DoesNotExist:
+            return DeleteParkingdetail(id=None, success=False)
+
     
 class Mutation(graphene.ObjectType):
     
@@ -520,6 +538,7 @@ class Mutation(graphene.ObjectType):
     
     #deletion
     delete_saved = DeleteSaved.Field()
+    delete_detail = DeleteParkingdetail.Field()
 
 
         

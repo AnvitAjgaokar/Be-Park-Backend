@@ -44,6 +44,7 @@ class ParkingDetails(models.Model):
     vehiclename = models.CharField(max_length=100,default='')
     vehiclenum = models.CharField(max_length=100,default='')
     parkingname = models.CharField(max_length=100,default='')
+    address = models.CharField(max_length=100,default='')
     selecteddate = models.CharField(max_length=100)
     duration = models.CharField(max_length=100)
     starthour = models.CharField(max_length=100)
@@ -52,8 +53,8 @@ class ParkingDetails(models.Model):
     floornum = models.CharField(max_length=100,default='')
     spotnum = models.CharField(max_length=100,default='')
     
-    def __str__(self):
-        return self.fireid
+    # def __str__(self):
+    #     return self.fireid
     
 
 class Ewallet(models.Model):
