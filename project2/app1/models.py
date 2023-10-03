@@ -7,6 +7,7 @@ class User(models.Model):
     phoneno = models.CharField(max_length=100,default='')
     gender = models.CharField(max_length=15,default='')
     fireid = models.CharField(max_length=100,default='')
+    profilephoto = models.FileField(upload_to='userProfilePhotos/', null=True, blank=True)
     
     def __str__(self):
         return self.username

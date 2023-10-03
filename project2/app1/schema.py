@@ -214,12 +214,13 @@ class CreateWallet(graphene.Mutation):
         # username = graphene.String(required=True)
         # date = graphene.String(required=True)
         email = graphene.String(required=True)
+        fireid = graphene.String(required=True)
         # phoneno = graphene.Float(required=True)
         # gender = graphene.String(required=True)
 
 
-    def mutate(self, info,email):
-        walletname = Ewallet(email =email)
+    def mutate(self, info,email,fireid):
+        walletname = Ewallet(email =email,fireid =fireid)
         walletname.save()
         return CreateWallet(walletname=walletname)  
 
