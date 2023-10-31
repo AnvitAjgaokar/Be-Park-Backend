@@ -48,9 +48,11 @@ class Query(graphene.ObjectType):
     parkingdetail = graphene.List(ParkingdetailType)
     parkingdetailbyid = graphene.Field(ParkingdetailType, id=graphene.String(required = True))
     parkingdetailbymulti = graphene.List(ParkingdetailType, fireid=graphene.String(required = True),todaydate= graphene.String(required = True),parkingname = graphene.String(required = True))
+    parkingdetailbyfireid = graphene.List(ParkingdetailType, fireid=graphene.String(required = True))
     
     parkingspot = graphene.List(ParkingspotType)
     parkingspotbyid = graphene.Field(ParkingspotType, id=graphene.ID(required = True))
+    parkingspotbyname = graphene.Field(ParkingspotType, name=graphene.String(required = True))
     
     balance = graphene.List(EwalletType)
     balancebyfireid = graphene.Field(EwalletType,fireid = graphene.String(required = True))
@@ -116,6 +118,12 @@ class Query(graphene.ObjectType):
         except ParkingDetails.DoesNotExist:
             raise GraphQLError(f"Parking Detail with ID {fireid} does not exist.")
     
+    def resolve_parkingdetailbyfireid(self, info, fireid):
+        try:
+            return ParkingDetails.objects.all().filter(fireid=fireid)
+        except ParkingDetails.DoesNotExist:
+            raise GraphQLError(f"Parking Detail with ID {fireid} does not exist.")
+    
     #parking spot resolvers    
     def resolve_parkingspot(self, info):
         return ParkingSpot.objects.all()
@@ -127,6 +135,12 @@ class Query(graphene.ObjectType):
         except ParkingSpot.DoesNotExist:
             raise GraphQLError(f"Parking Spot with ID {id} does not exist.")
     
+    def resolve_parkingspotbyname(self, info, name):
+        try:
+            print(name)
+            return ParkingSpot.objects.all().filter(name=name)
+        except ParkingSpot.DoesNotExist:
+            raise GraphQLError(f"Parking Spot with ID {name} does not exist.")
     
     # E-wallet resolvers    
     def resolve_balance(self, info):
@@ -199,9 +213,10 @@ class CreateParkingdetail(graphene.Mutation):
         todaydate = graphene.String(required=True)
         parkingname = graphene.String(required=True)
         address = graphene.String(required=True)
+        displayphoto = graphene.String(required=True)
         
-    def mutate(self, info,fireid,todaydate,parkingname,address):
-        parkingdetail = ParkingDetails(fireid = fireid,todaydate=todaydate,parkingname= parkingname,address=address)
+    def mutate(self, info,fireid,todaydate,parkingname,address,displayphoto):
+        parkingdetail = ParkingDetails(fireid = fireid,todaydate=todaydate,parkingname= parkingname,address=address,displayphoto=displayphoto)
         parkingdetail.save()
         return CreateParkingdetail(parkingdetail = parkingdetail)  
     
@@ -232,11 +247,13 @@ class CreateSaved(graphene.Mutation):
         fireid = graphene.String(required = True)
         spotname = graphene.String(required = True)
         spotaddress = graphene.String(required = True)
+        displayphoto = graphene.String(required = True)
+        parkid = graphene.String(required = True)
 
 
 
-    def mutate(self, info,fireid,spotname,spotaddress):
-        save = SavedParkinglot(fireid=fireid,spotname=spotname,spotaddress=spotaddress)
+    def mutate(self, info,fireid,spotname,spotaddress,displayphoto,parkid):
+        save = SavedParkinglot(fireid=fireid,spotname=spotname,spotaddress=spotaddress,displayphoto=displayphoto,parkid=parkid)
         save.save()
         return CreateSaved(save=save) 
     

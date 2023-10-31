@@ -20,7 +20,8 @@ class ParkingSpot(models.Model):
     time = models.CharField(max_length=30)
     valet = models.CharField(max_length=100)
     description = models.CharField(max_length =1500)
-    rate = models.IntegerField()    
+    rate = models.IntegerField() 
+    displayphoto = models.FileField(upload_to='displayPhotos/', null=True, blank=True)   
     
     # def __str__(self):
     #     return self.name
@@ -53,6 +54,7 @@ class ParkingDetails(models.Model):
     totalcost = models.CharField(max_length=100,default='')
     floornum = models.CharField(max_length=100,default='')
     spotnum = models.CharField(max_length=100,default='')
+    displayphoto = models.CharField(max_length=100,default='')
     
     # def __str__(self):
     #     return self.fireid
@@ -69,3 +71,5 @@ class SavedParkinglot(models.Model):
     fireid = models.CharField(max_length=100)
     spotname = models.CharField(max_length=100)
     spotaddress = models.CharField(max_length=100)
+    displayphoto = models.CharField(max_length=100,default='')
+    parkid = models.CharField(max_length=100,default='')
